@@ -32,19 +32,25 @@ void draw()
 {
     
     glClear  (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glBegin(GL_LINE_STRIP);
+    glBegin(GL_LINE_STRIP); //drawing the bounding box
         glColor3d(controlColor[0], controlColor[1], controlColor[2]);
         for (auto point: B->controlPoints)
             glVertex2d(point.first, point.second);
     glEnd();
-    glBegin(GL_LINE_STRIP);    
+    glBegin(GL_LINE_STRIP); //drawing the curve
         glColor3d(curveColor[0], curveColor[1], curveColor[2]);
         for (auto point: B->curvePoints)
             glVertex2d(point.first, point.second);
     glEnd();    
     glutSwapBuffers();
 }
-
+/**
+ * The mouse click callback method
+ * @param button The glut enum for left or right button
+ * @param state Pressed or released
+ * @param x x coordinate on the window
+ * @param y y coordinate on the window
+ */
 void mouseClick(int button, int state, int x, int y)
 {
     if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN)

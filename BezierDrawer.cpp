@@ -20,7 +20,7 @@ void BezierDrawer::make(std::vector< Point > ControlPoints)
     GLdouble incr = 1.0 / steps;    
     for(GLdouble t = 0.0; t <= 1.0; t += incr)
     {    
-        curvePoints.push_back(deCasteljau(0, controlPoints.size() - 1, t));
+        curvePoints.push_back(deCasteljau(0, controlPoints.size() - 1, t)); // performing deCasteljau for each t
     }
 }
 
