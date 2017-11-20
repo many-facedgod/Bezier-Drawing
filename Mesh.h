@@ -20,7 +20,7 @@ using namespace glm;
 /**
  * Structure which represents a 3D point
  */
-struct Point{
+struct Point {
     double x;
     double y;
     double z;
@@ -29,17 +29,16 @@ struct Point{
 /**
  * Class to model a polygonal mesh using pointer to vertex list representation
  */
-class Mesh
-{
+class Mesh {
     vector<Point> vertices; //list of vertices
-    vector<vector<int> > polygons; //list of polygons
+    vector<vector<long> > polygons; //list of polygons
 
+public:
     /**
      * Function to add a 3D point to the mesh
      * @param p point to be added
      */
-    void addPoint(Point p)
-    {
+    inline void addPoint(Point p) {
         vertices.push_back(p);
     }
 
@@ -47,9 +46,39 @@ class Mesh
      * Function to add a polygon to the mesh
      * @param polygon set of vertices in anticlockwise order which define the polygon
      */
-    void addPolygon(vector<int> polygon)
-    {
+    inline void addPolygon(vector<long> polygon) {
         polygons.push_back(polygon);
     }
+
+    /**
+     * Fetch the vertex list of the input polygon
+     */
+    vector<long> getVertexListOfPolygon(long polygonNumber) {
+        if(polygonNumber>=polygons.size())
+            return NULL;
+        else
+            return polygons[polygonNumber];
+    }
+
+    /**
+     * Fetch the coordinates of input point
+     */
+    Point getVertexCoordinates(long vertexNumber){
+        if(vertexNumber>=vertices.size())
+            return NULL;
+        else
+            return vertices[vertexNumber];
+    }
+
+    /**
+     * Returns the vertex number of the input point
+     */
+    long getVertexIndex(Point p) {
+        if (find(vertices.begin(), vertices.end(), p) == vertices.end())
+            return -1;
+        else
+            return find(vertices.begin(), vertices.end(), p) - vertices.begin();
+    }
 };
+
 #endif //BEZIER_DRAWING_MESH_H
