@@ -10,38 +10,56 @@
 #include "BezierDrawer.h"
 
 using namespace std;
+/*
+ * Utils
+ */
 Camera* C;
 BezierDrawer* B;
-/*
- * 
- */
 
+/*
+ * Params
+ */
+int width = 500;
+int height = 500;
+GLdouble curveColor[3] = {1.0, 0.0, 0.0};
+GLdouble controlColor[3] = {0.0, 0.0, 1.0};
+GLdouble backColor[3] = {0.0, 0.0, 0.0};
+
+/**
+ * The rendering function
+ */
 void draw()
 {
     
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear  (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBegin(GL_LINE_STRIP);
-    glVertex2d(0.1, 0.10);
-    for (auto point: B->curvePoints)
-    {
-        
-        glVertex2d(point.first, point.second);
-    }
+        glColor3d(controlColor[0], controlColor[1], controlColor[2]);
+        for (auto point: B->controlPoints)
+            glVertex2d(point.first, point.second);
     glEnd();
-    glFlush();
+    glBegin(GL_LINE_STRIP);    
+        glColor3d(curveColor[0], curveColor[1], curveColor[2]);
+        for (auto point: B->curvePoints)
+            glVertex2d(point.first, point.second);
+    glEnd();    
+    glutSwapBuffers();
 }
 
+/**
+ * Initializes the glut parameters and the GL camera
+ */
 void initGlut()
 {
-    int x;
+    int x = 0;
     glutInit(&x, nullptr);    
-    glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowPosition(0,0);
-    glutInitWindowSize(500, 500);
+    glutInitWindowSize(width, height);
     glutCreateWindow("Bezier");
-    C = new Camera(500, 500);
-    glClearColor(0, 0, 0, 0);
+    C = new Camera(width, height);
+    glClearColor(backColor[0], backColor[1], backColor[2], 0);
 }
+
 int main(int argc, char** argv)
 {   
     initGlut();
