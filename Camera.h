@@ -34,7 +34,7 @@ class Camera
          */
         Camera(int Width, int Height);
         /**
-         * Switches on the 2D view.
+         * Switches to 2D view
          */
         void to2D();
         /**
