@@ -45,6 +45,15 @@ void draw()
     glutSwapBuffers();
 }
 
+void mouseClick(int button, int state, int x, int y)
+{
+    if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+        B->add(make_pair((double)x, height - (double)y));
+    }
+    glutPostRedisplay();
+}
+
 /**
  * Initializes the glut parameters and the GL camera
  */
@@ -57,19 +66,14 @@ void initGlut()
     glutInitWindowSize(width, height);
     glutCreateWindow("Bezier");
     C = new Camera(width, height);
+    B = new BezierDrawer(1000);
     glClearColor(backColor[0], backColor[1], backColor[2], 0);
+    glutMouseFunc(mouseClick);
 }
 
 int main(int argc, char** argv)
 {   
     initGlut();
-    B = new BezierDrawer(100);
-    std::vector < pair<GLdouble, GLdouble> > controls;
-    controls.push_back(make_pair(0.0, 0.0));
-    controls.push_back(make_pair(110.0, 110.0));
-    controls.push_back(make_pair(20.0, 70.0));
-    controls.push_back(make_pair(50.0, 27.0));
-    B->make(controls);    
     glutDisplayFunc(draw);
     glutMainLoop();
 }

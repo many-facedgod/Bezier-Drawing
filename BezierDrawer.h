@@ -7,18 +7,22 @@
 
 #ifndef BEZIERDRAWER_H
 #define BEZIERDRAWER_H
+#include <unordered_map>
 #include <vector>
 #include "Camera.h"
+typedef std::pair<GLdouble, GLdouble> Point;
 class BezierDrawer
 {
 public:
     int steps;
-    std::vector < std::pair<GLdouble, GLdouble> > controlPoints;
-    std::vector < std::pair<GLdouble, GLdouble> > curvePoints;
+    std::vector < Point > controlPoints;
+    std::vector < Point > curvePoints;
     BezierDrawer(int Steps);
-    void make (std::vector < std::pair<GLdouble, GLdouble> > ControlPoints);
+    void make (std::vector < Point > ControlPoints);
+    void add (Point p);
 private:
-    std::pair<GLdouble, GLdouble> deCasteljau(int start, int end, GLdouble t);
+    Point lerp(Point p1, Point p2, GLdouble t);
+    Point deCasteljau(int start, int end, GLdouble t);
     
 };
 
