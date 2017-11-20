@@ -16,7 +16,7 @@ file(GLOB SOURCE_FILES
         *.h
         )
 
-add_executable(Bezier-Drawing ${SOURCE_FILES} Mesh.h)
+add_executable(Bezier-Drawing ${SOURCE_FILES} Mesh.h RotatePoints.cpp)
 add_executable(main.cpp ${SOURCE_FILES})
 target_link_libraries (Bezier-Drawing ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_glu_LIBRARY})
 target_link_libraries (main.cpp ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_glu_LIBRARY})
