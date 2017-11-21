@@ -77,7 +77,9 @@ void initGlut()
     B = new BezierDrawer(10);
     vector<vector<Point3d> > vert;
     surfaceInit(B, vert);
-//    cout<<"Blah"<<vert.size();
+    cout<<"Blah"<<vert.size()<<endl;
+    makeSurface(vert);
+    cout<<"Blah"<<vert.size();
 
     glClearColor(backColor[0], backColor[1], backColor[2], 0);
     glutMouseFunc(mouseClick);

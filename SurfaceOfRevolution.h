@@ -58,25 +58,36 @@ void getRotateMat(dmat3 &rotate_mat, double angle)
     rotate_mat[2][2] = cos(radians(angle));
 }
 
+void updateVertices(vector<vector<Point3d> > &vect, dmat3 rotate_mat)
+{
+    int size = vect.size();
+    vector<Point3d> temp1;
+    vector<Point3d> temp (vect[size-1].begin(), vect[size-1].end());
+    for(auto point: temp)
+    {
+        dvec3 temp_point = dvec3(point.x, point.y, point.z);
+        vec3 transformed_point = rotate_mat * temp_point;
+        Point3d trans_point;
+        trans_point.x = transformed_point[0];
+        trans_point.y = transformed_point[1];
+        trans_point.z = transformed_point[2];
+        temp1.push_back(trans_point);
+    }
+    vect.push_back(temp1);
+}
+
 void makeSurface(vector<vector<Point3d> > &vect)
 {
 
     // Iterating over degree from 1 to 360
-    for(int angle = 1; angle <= 360; angle++)
+    for(int angle = 1; angle < 360; angle++)
     {
         dmat3 rotate_mat(0.0f);
         getRotateMat(rotate_mat, angle);
-        int size = vect.size();
-        vector<Point3d> temp (vect[size-1].begin(), vect[size-1].end());
-        for(auto point: temp)
-        {
-            dvec3 temp_point = dvec3(point.x, point.y, point.z);
-
-        }
-
+        updateVertices(vect, rotate_mat);
 
     }
 
-
-
 }
+
+
