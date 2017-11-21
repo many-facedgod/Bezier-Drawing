@@ -55,7 +55,7 @@ void makeMesh(vector<vector<dvec3> > &vertices, double increment, string filenam
     for(double angle = increment; angle < 360; angle+= increment)
     {
         dmat3 rotate_mat(0.0f);
-        getRotateMat(rotate_mat, angle);
+        getRotateMat(rotate_mat, increment);
         updateVertices(vertices, rotate_mat);
     }
     
@@ -76,8 +76,8 @@ void makeMesh(vector<vector<dvec3> > &vertices, double increment, string filenam
             triangle1.push_back(m.getVertexIndex(vertices[i+1][j]));
 
             vector<long> triangle2;
-            triangle1.push_back(m.getVertexIndex(vertices[i+1][j]));
-            triangle1.push_back(m.getVertexIndex(vertices[i][j+1]));
+            triangle2.push_back(m.getVertexIndex(vertices[i+1][j]));
+            triangle2.push_back(m.getVertexIndex(vertices[i][j+1]));
             triangle2.push_back(m.getVertexIndex(vertices[i+1][j+1]));
 
             m.addPolygon(triangle1);

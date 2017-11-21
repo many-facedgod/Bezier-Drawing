@@ -28,7 +28,7 @@ GLdouble curveColor[3] = {1.0, 0.0, 0.0}; //color of the Bezier curve
 GLdouble controlColor[3] = {0.0, 0.0, 1.0}; //color of the Control polygon
 GLdouble backColor[3] = {0.0, 0.0, 0.0}; //color of the background
 double clickThresh = 50.0; //threshold for clicking distance
-int steps = 1000; //segments per Bezier curve
+int steps = 10; //segments per Bezier curve
 /**
  * The rendering function
  */
