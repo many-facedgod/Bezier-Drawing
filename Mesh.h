@@ -55,7 +55,10 @@ public:
      */
     vector<long> getVertexListOfPolygon(long polygonNumber) {
         if(polygonNumber>=polygons.size())
-            return NULL;
+        {
+            vector<long> temp;
+            return temp;
+        }
         else
             return polygons[polygonNumber];
     }
@@ -65,7 +68,10 @@ public:
      */
     Point getVertexCoordinates(long vertexNumber){
         if(vertexNumber>=vertices.size())
-            return NULL;
+        {
+            Point temp;
+            return temp;
+        }
         else
             return vertices[vertexNumber];
     }
@@ -74,10 +80,10 @@ public:
      * Returns the vertex number of the input point
      */
     long getVertexIndex(Point p) {
-        if (find(vertices.begin(), vertices.end(), p) == vertices.end())
-            return -1;
+        if (find(vertices.begin(), vertices.end(), p) != vertices.end())
+            return
         else
-            return find(vertices.begin(), vertices.end(), p) - vertices.begin();
+            return -1;
     }
 };
 

@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include "Camera.h"
 #include "BezierDrawer.h"
+#include "SurfaceOfRevolution.h"
+#include "Mesh.h"
 
 using namespace std;
 /*
@@ -63,13 +65,22 @@ void initGlut()
 int main(int argc, char** argv)
 {   
     initGlut();
-    B = new BezierDrawer(100);
+    B = new BezierDrawer(10);
     std::vector < pair<GLdouble, GLdouble> > controls;
     controls.push_back(make_pair(0.0, 0.0));
     controls.push_back(make_pair(110.0, 110.0));
     controls.push_back(make_pair(20.0, 70.0));
     controls.push_back(make_pair(50.0, 27.0));
-    B->make(controls);    
+    B->make(controls);
+    vector<vector<Point> > rev_vertices;
+    surfaceInit(B, rev_vertices);
+//    for(int i=0;i<vertices.size();i++)
+//    {
+//        for(int j=0;j<vertices[i].size();j++)
+//        {
+//            cout<<vertices[i][j].x<<" "<<vertices[i][j].y<<" "<<vertices[i][j].z<<endl;
+//        }
+//    }
     glutDisplayFunc(draw);
     glutMainLoop();
 }
