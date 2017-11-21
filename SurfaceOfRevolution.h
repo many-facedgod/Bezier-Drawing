@@ -50,14 +50,37 @@ void updateVertices(vector<vector<dvec3> > &vertices, dmat3 rotate_mat)
 
 void makeMesh(vector<vector<dvec3> > &vertices, double increment)
 {
+    Mesh m;
     // Iterating over degree from 1 to 360
     for(double angle = increment; angle < 360; angle+= increment)
     {
         dmat3 rotate_mat(0.0f);
         getRotateMat(rotate_mat, angle);
         updateVertices(vertices, rotate_mat);
-
     }
+    
+    //add vertices to the mesh
+    for (auto &vertice : vertices) {
+        for (long j = 0; j < vertice.size(); ++j) {
+            m.addPoint(vertice[j]);
+        }
+    }
+
+    vertices.push_back(vertices[0]); //finishing the mesh by adding the initial points
+    //add polygons to the mesh
+    for (long i = 0; i < vertices.size()-1; ++i) {
+        vector<long> polygonVertices;
+        for (const auto &j : vertices[i]) {
+            polygonVertices.push_back(m.getVertexIndex(j));
+        }
+        for (long j = vertices[i+1].size()-1; j >= 0 ; --j) {
+            polygonVertices.push_back(m.getVertexIndex(vertices[i+1][j]));
+        }
+        m.addPolygon(polygonVertices);
+    }
+
+
+    m.serialize("hi.off");
     
 }
 

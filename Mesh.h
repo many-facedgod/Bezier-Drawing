@@ -55,7 +55,7 @@ public:
      * @param p point to be added
      * @param c color of the point
      */
-    inline void addPoint(dvec3 p, Color c = {255,255,255,1}) {
+    inline void addPoint(dvec3 p, Color c = {1,1,1,1}) {
         vertices.push_back(p);
         vertexColors.push_back(c);
     }
@@ -65,7 +65,7 @@ public:
      * @param polygon set of vertices in anticlockwise order which define the polygon
      * @param c color of the polygon
      */
-    inline void addPolygon(vector<long> polygon, Color c = {255,255,255,1}) {
+    inline void addPolygon(vector<long> polygon, Color c = {1,1,1,1}) {
         polygons.push_back(polygon);
         polygonColors.push_back(c);
     }
@@ -114,7 +114,7 @@ public:
         f<<vertices.size()<<" "<<polygons.size()<<" "<<edgeCount<<endl;
         //Write the vertices and their colors
         for (int i = 0; i < vertices.size(); ++i) {
-            f<<vertices[i].x<<" "<<vertices[i].y<<" "<<vertices[i].z<<" "<<vertexColors[i].r<<" "<<vertexColors[i].g<<" "<<vertexColors[i].b<<" "<<vertexColors[i].a<<endl;
+            f<<vertices[i].x<<" "<<vertices[i].y<<" "<<vertices[i].z<<endl;
         }
         //Write polygons and their colors
         for (int j = 0; j < polygons.size(); ++j) {
@@ -122,7 +122,7 @@ public:
             for (long k : polygons[j]) {
                 f<< k <<" ";
             }
-            f<<polygonColors[j].r<<" "<<polygonColors[j].g<<" "<<polygonColors[j].b<<" "<<polygonColors[j].a<<endl;
+            f<<endl;
         }
         f.close();
     }

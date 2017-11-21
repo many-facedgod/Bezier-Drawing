@@ -58,6 +58,9 @@ void mouseClick(int button, int state, int x, int y)
     if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         B->add(make_pair((double)x, height - (double)y));
+        vector<vector<dvec3> > vertices;
+        meshInit(B, vertices);
+        makeMesh(vertices,1);
     }
     glutPostRedisplay();
 }
@@ -74,10 +77,7 @@ void initGlut()
     glutInitWindowSize(width, height);
     glutCreateWindow("Bezier");
     C = new Camera(width, height);
-    B = new BezierDrawer(10); //10 is the number of points uniformly sampled
-    vector<vector<dvec3> > vertices;
-    meshInit(B, vertices);
-    makeMesh(vertices,0.1);
+    B = new BezierDrawer(10);
 
     glClearColor(backColor[0], backColor[1], backColor[2], 0);
     glutMouseFunc(mouseClick);
