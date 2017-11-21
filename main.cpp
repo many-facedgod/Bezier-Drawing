@@ -19,12 +19,12 @@ BezierDrawer* B;
 /*
  * Params
  */
-int width = 500;
-int height = 500;
-GLdouble curveColor[3] = {1.0, 0.0, 0.0};
-GLdouble controlColor[3] = {0.0, 0.0, 1.0};
-GLdouble backColor[3] = {0.0, 0.0, 0.0};
-
+int width = 500; //width of the window
+int height = 500; //height of the window
+GLdouble curveColor[3] = {1.0, 0.0, 0.0}; //color of the Bezier curve
+GLdouble controlColor[3] = {0.0, 0.0, 1.0}; //color of the Control polygon
+GLdouble backColor[3] = {0.0, 0.0, 0.0}; //color of the background
+double clickThresh = 50.0; //threshold for clicking distance
 /**
  * The rendering function
  */
@@ -45,6 +45,36 @@ void draw()
     glutSwapBuffers();
 }
 /**
+ * Computes the squared Euclidean distance between two points
+ * @param p The first point
+ * @param q The second point
+ * @return The squared Euclidean distance
+ */
+double dist(Point p, Point q)
+{
+    return (p.first - q.first) * (p.first - q.first) + (p.second - q.second) * (p.second - q.second);
+}
+/**
+ * Deletes the closest control point of B to p and remakes the curve
+ * @param p The reference point
+ */
+void deleteClosest(Point p)
+{
+    double min = std::numeric_limits<double>::max();
+    int position = 0;
+    for(int i = 0; i < B->controlPoints.size(); i++) //looping to find minimum dist
+    {
+        double d = dist(B->controlPoints[i], p);
+        if(d < min)
+        {
+            min = d;
+            position = i;
+        }
+    }
+    if (min < clickThresh) //checking if it is less than a threshold
+        B->deleteControl(position);
+}
+/**
  * The mouse click callback method
  * @param button The glut enum for left or right button
  * @param state Pressed or released
@@ -53,9 +83,13 @@ void draw()
  */
 void mouseClick(int button, int state, int x, int y)
 {
-    if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN) //addition
     {
         B->add(make_pair((double)x, height - (double)y));
+    }
+    else if(button ==  GLUT_RIGHT_BUTTON && state == GLUT_DOWN) //deletion
+    {
+        deleteClosest(make_pair((double)x, height - (double)y));
     }
     glutPostRedisplay();
 }

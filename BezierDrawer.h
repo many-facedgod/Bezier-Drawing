@@ -18,8 +18,10 @@ public:
     std::vector < Point > controlPoints;
     std::vector < Point > curvePoints;
     BezierDrawer(int Steps);
-    void make (std::vector < Point > ControlPoints);
+    void makeFromVector (std::vector < Point > ControlPoints);
+    void make();
     void add (Point p);
+    void deleteControl(int index);
 private:
     Point lerp(Point p1, Point p2, GLdouble t);
     Point deCasteljau(int start, int end, GLdouble t);
