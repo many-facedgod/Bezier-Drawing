@@ -27,6 +27,7 @@ GLdouble curveColor[3] = {1.0, 0.0, 0.0}; //color of the Bezier curve
 GLdouble controlColor[3] = {0.0, 0.0, 1.0}; //color of the Control polygon
 GLdouble backColor[3] = {0.0, 0.0, 0.0}; //color of the background
 double clickThresh = 50.0; //threshold for clicking distance
+int steps = 1000; //segments per Bezier curve
 /**
  * The rendering function
  */
@@ -88,9 +89,6 @@ void mouseClick(int button, int state, int x, int y)
     if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN) //addition
     {
         B->add(make_pair((double)x, height - (double)y));
-        vector<vector<dvec3> > vertices;
-        meshInit(B, vertices);
-        makeMesh(vertices,1);
     }
     else if(button ==  GLUT_RIGHT_BUTTON && state == GLUT_DOWN) //deletion
     {
@@ -111,8 +109,7 @@ void initGlut()
     glutInitWindowSize(width, height);
     glutCreateWindow("Bezier");
     C = new Camera(width, height);
-    B = new BezierDrawer(10);
-
+    B = new BezierDrawer(steps);
     glClearColor(backColor[0], backColor[1], backColor[2], 0);
     glutMouseFunc(mouseClick);
 }
