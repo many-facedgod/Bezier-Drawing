@@ -48,7 +48,7 @@ void updateVertices(vector<vector<dvec3> > &vertices, dmat3 rotate_mat)
     vertices.push_back(new_points);
 }
 
-void makeMesh(vector<vector<dvec3> > &vertices, double increment)
+void makeMesh(vector<vector<dvec3> > &vertices, double increment, string filename)
 {
     Mesh m;
     // Iterating over degree from 1 to 360
@@ -67,21 +67,25 @@ void makeMesh(vector<vector<dvec3> > &vertices, double increment)
     }
 
     vertices.push_back(vertices[0]); //finishing the mesh by adding the initial points
-    //add polygons to the mesh
+    //add polygons to the mesh by converting them into a series of triangles
     for (long i = 0; i < vertices.size()-1; ++i) {
-        vector<long> polygonVertices;
-        for (const auto &j : vertices[i]) {
-            polygonVertices.push_back(m.getVertexIndex(j));
+        for (long j = 0; j < vertices[i].size() - 1; ++j) {
+            vector<long> triangle1;
+            triangle1.push_back(m.getVertexIndex(vertices[i][j]));
+            triangle1.push_back(m.getVertexIndex(vertices[i][j+1]));
+            triangle1.push_back(m.getVertexIndex(vertices[i+1][j]));
+
+            vector<long> triangle2;
+            triangle1.push_back(m.getVertexIndex(vertices[i+1][j]));
+            triangle1.push_back(m.getVertexIndex(vertices[i][j+1]));
+            triangle2.push_back(m.getVertexIndex(vertices[i+1][j+1]));
+
+            m.addPolygon(triangle1);
+            m.addPolygon(triangle2);
+            cout<<i<<" "<<j<<endl;
         }
-        for (long j = vertices[i+1].size()-1; j >= 0 ; --j) {
-            polygonVertices.push_back(m.getVertexIndex(vertices[i+1][j]));
-        }
-        m.addPolygon(polygonVertices);
     }
-
-
-    m.serialize("hi.off");
-    
+    m.serialize(filename);
 }
 
 #endif //BEZIER_DRAWING_SURFACEOFREVOLUTION_H

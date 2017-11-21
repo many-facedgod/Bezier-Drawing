@@ -106,6 +106,7 @@ void mouseClick(int button, int state, int x, int y)
     if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN) //addition
     {
         B->add(n);
+
     }
     else if(button ==  GLUT_MIDDLE_BUTTON && state == GLUT_DOWN) //deletion
     {
@@ -143,6 +144,22 @@ void mouseMove(int x, int y)
 }
 
 /**
+ * Handles key presses
+ * @param key the keyboard input given by the user
+ * @param x x coordinate of the input
+ * @param y y coordinate of the input
+ */
+void keyPress(unsigned char key,int x,int y) {
+    if(key=='s')
+    {
+        vector<vector<dvec3> > vertices;
+        meshInit(B,vertices);
+        makeMesh(vertices,10,"mesh.off");
+    }
+    glutPostRedisplay();
+}
+
+/**
  * Initializes the glut parameters and the GL camera
  */
 void initGlut()
@@ -158,6 +175,7 @@ void initGlut()
     glClearColor(backColor[0], backColor[1], backColor[2], 0);
     glutMouseFunc(mouseClick);
     glutMotionFunc(mouseMove);
+    glutKeyboardFunc(keyPress);
 }
 
 int main(int argc, char** argv)
