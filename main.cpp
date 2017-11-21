@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include "Camera.h"
 #include "BezierDrawer.h"
+#include "SurfaceOfRevolution.h"
+#include "Mesh.h"
 
 using namespace std;
 /*
@@ -30,7 +32,6 @@ double clickThresh = 50.0; //threshold for clicking distance
  */
 void draw()
 {
-    
     glClear  (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBegin(GL_LINE_STRIP); //drawing the bounding box
         glColor3d(controlColor[0], controlColor[1], controlColor[2]);
@@ -44,6 +45,7 @@ void draw()
     glEnd();    
     glutSwapBuffers();
 }
+
 /**
  * Computes the squared Euclidean distance between two points
  * @param p The first point
@@ -86,6 +88,9 @@ void mouseClick(int button, int state, int x, int y)
     if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN) //addition
     {
         B->add(make_pair((double)x, height - (double)y));
+        vector<vector<dvec3> > vertices;
+        meshInit(B, vertices);
+        makeMesh(vertices,1);
     }
     else if(button ==  GLUT_RIGHT_BUTTON && state == GLUT_DOWN) //deletion
     {
@@ -106,7 +111,8 @@ void initGlut()
     glutInitWindowSize(width, height);
     glutCreateWindow("Bezier");
     C = new Camera(width, height);
-    B = new BezierDrawer(1000);
+    B = new BezierDrawer(10);
+
     glClearColor(backColor[0], backColor[1], backColor[2], 0);
     glutMouseFunc(mouseClick);
 }

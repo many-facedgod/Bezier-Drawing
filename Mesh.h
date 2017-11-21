@@ -18,44 +18,65 @@ using namespace std;
 using namespace glm;
 
 /**
- * Structure which represents a 3D point
+ * Structure to store the color values of objects
  */
-struct Point {
-    double x;
-    double y;
-    double z;
+struct Color{
+    double r,g,b,a;
 };
 
 /**
  * Class to model a polygonal mesh using pointer to vertex list representation
  */
 class Mesh {
-    vector<Point> vertices; //list of vertices
+    vector<dvec3> vertices; //list of vertices
     vector<vector<long> > polygons; //list of polygons
+    vector<Color> vertexColors;
+    vector<Color> polygonColors;
+    long edgeCount;
+
+    /**
+     * Calculates the edge count of the mesh
+     */
+    void calculateEdgeCount()
+    {
+        set<pair<long,long> > edges;
+        for (int i = 0; i < polygons.size(); ++i) {
+            for (int j = 0; j < polygons[i].size()-1; ++j) {
+                if(edges.find(make_pair(polygons[i][j],polygons[i][j+1])) == edges.end() && edges.find(make_pair(polygons[i][j+1],polygons[i][j])) == edges.end())
+                    edges.insert(make_pair(polygons[i][j],polygons[i][j+1]));
+            }
+        }
+        edgeCount = edges.size();
+    }
 
 public:
     /**
      * Function to add a 3D point to the mesh
      * @param p point to be added
+     * @param c color of the point
      */
-    inline void addPoint(Point p) {
+    inline void addPoint(dvec3 p, Color c = {1,1,1,1}) {
         vertices.push_back(p);
+        vertexColors.push_back(c);
     }
 
     /**
      * Function to add a polygon to the mesh
      * @param polygon set of vertices in anticlockwise order which define the polygon
+     * @param c color of the polygon
      */
-    inline void addPolygon(vector<long> polygon) {
+    inline void addPolygon(vector<long> polygon, Color c = {1,1,1,1}) {
         polygons.push_back(polygon);
+        polygonColors.push_back(c);
     }
 
     /**
      * Fetch the vertex list of the input polygon
      */
     vector<long> getVertexListOfPolygon(long polygonNumber) {
+        vector<long> temp;
         if(polygonNumber>=polygons.size())
-            return NULL;
+            return temp;
         else
             return polygons[polygonNumber];
     }
@@ -63,9 +84,10 @@ public:
     /**
      * Fetch the coordinates of input point
      */
-    Point getVertexCoordinates(long vertexNumber){
+    dvec3 getVertexCoordinates(long vertexNumber){
+        dvec3 p;
         if(vertexNumber>=vertices.size())
-            return NULL;
+            return p;
         else
             return vertices[vertexNumber];
     }
@@ -73,12 +95,38 @@ public:
     /**
      * Returns the vertex number of the input point
      */
-    long getVertexIndex(Point p) {
+    long getVertexIndex(dvec3 p) {
         if (find(vertices.begin(), vertices.end(), p) == vertices.end())
             return -1;
         else
             return find(vertices.begin(), vertices.end(), p) - vertices.begin();
     }
+
+    /**
+     * Serialize the mesh in OFF format
+     * @param filename name of the OFF file
+     */
+    void serialize(string filename)
+    {
+        calculateEdgeCount();
+        fstream f(filename,ios::out);
+        f<<"OFF"<<endl;
+        f<<vertices.size()<<" "<<polygons.size()<<" "<<edgeCount<<endl;
+        //Write the vertices and their colors
+        for (int i = 0; i < vertices.size(); ++i) {
+            f<<vertices[i].x<<" "<<vertices[i].y<<" "<<vertices[i].z<<endl;
+        }
+        //Write polygons and their colors
+        for (int j = 0; j < polygons.size(); ++j) {
+            f<<polygons[j].size()<<" ";
+            for (long k : polygons[j]) {
+                f<< k <<" ";
+            }
+            f<<endl;
+        }
+        f.close();
+    }
+
 };
 
 #endif //BEZIER_DRAWING_MESH_H
