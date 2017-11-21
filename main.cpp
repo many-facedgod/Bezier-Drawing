@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include "Camera.h"
 #include "BezierDrawer.h"
+#include "SurfaceOfRevolution.h"
+#include "Mesh.h"
 
 using namespace std;
 /*
@@ -30,7 +32,6 @@ GLdouble backColor[3] = {0.0, 0.0, 0.0};
  */
 void draw()
 {
-    
     glClear  (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBegin(GL_LINE_STRIP); //drawing the bounding box
         glColor3d(controlColor[0], controlColor[1], controlColor[2]);
@@ -44,6 +45,7 @@ void draw()
     glEnd();    
     glutSwapBuffers();
 }
+
 /**
  * The mouse click callback method
  * @param button The glut enum for left or right button
@@ -72,7 +74,11 @@ void initGlut()
     glutInitWindowSize(width, height);
     glutCreateWindow("Bezier");
     C = new Camera(width, height);
-    B = new BezierDrawer(1000);
+    B = new BezierDrawer(10); //10 is the number of points uniformly sampled
+    vector<vector<dvec3> > vertices;
+    meshInit(B, vertices);
+    makeMesh(vertices,0.1);
+
     glClearColor(backColor[0], backColor[1], backColor[2], 0);
     glutMouseFunc(mouseClick);
 }

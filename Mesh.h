@@ -17,20 +17,6 @@
 using namespace std;
 using namespace glm;
 
-bool operator == (Point a, Point b)
-{
-    if(a.x == b.x && a.y==b.y && a.z==b.z)
-        return true;
-    else
-        return false;
-}
-/**
- * Structure which represents a 3D point
- */
-struct Point {
-    double x,y,z;
-};
-
 /**
  * Structure to store the color values of objects
  */
@@ -42,7 +28,7 @@ struct Color{
  * Class to model a polygonal mesh using pointer to vertex list representation
  */
 class Mesh {
-    vector<Point> vertices; //list of vertices
+    vector<dvec3> vertices; //list of vertices
     vector<vector<long> > polygons; //list of polygons
     vector<Color> vertexColors;
     vector<Color> polygonColors;
@@ -69,7 +55,7 @@ public:
      * @param p point to be added
      * @param c color of the point
      */
-    inline void addPoint(Point p, Color c = {255,255,255,1}) {
+    inline void addPoint(dvec3 p, Color c = {255,255,255,1}) {
         vertices.push_back(p);
         vertexColors.push_back(c);
     }
@@ -88,8 +74,9 @@ public:
      * Fetch the vertex list of the input polygon
      */
     vector<long> getVertexListOfPolygon(long polygonNumber) {
+        vector<long> temp;
         if(polygonNumber>=polygons.size())
-            return NULL;
+            return temp;
         else
             return polygons[polygonNumber];
     }
@@ -97,9 +84,10 @@ public:
     /**
      * Fetch the coordinates of input point
      */
-    Point getVertexCoordinates(long vertexNumber){
+    dvec3 getVertexCoordinates(long vertexNumber){
+        dvec3 p;
         if(vertexNumber>=vertices.size())
-            return NULL;
+            return p;
         else
             return vertices[vertexNumber];
     }
@@ -107,7 +95,7 @@ public:
     /**
      * Returns the vertex number of the input point
      */
-    long getVertexIndex(Point p) {
+    long getVertexIndex(dvec3 p) {
         if (find(vertices.begin(), vertices.end(), p) == vertices.end())
             return -1;
         else
