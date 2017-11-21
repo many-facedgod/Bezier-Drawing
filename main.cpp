@@ -17,7 +17,8 @@ using namespace std;
  */
 Camera* C;
 BezierDrawer* B;
-
+bool track;
+int dragPos;
 /*
  * Params
  */
@@ -57,11 +58,13 @@ double dist(Point p, Point q)
 {
     return (p.first - q.first) * (p.first - q.first) + (p.second - q.second) * (p.second - q.second);
 }
+
 /**
- * Deletes the closest control point of B to p and remakes the curve
+ * Gets the closest point to the point p, with a threshold
  * @param p The reference point
+ * @return The index of the closest point in B->controlPoints. -1 if none within threshold
  */
-void deleteClosest(Point p)
+int getClosest(Point p)
 {
     double min = std::numeric_limits<double>::max();
     int position = 0;
@@ -74,8 +77,21 @@ void deleteClosest(Point p)
             position = i;
         }
     }
-    if (min < clickThresh) //checking if it is less than a threshold
-        B->deleteControl(position);
+    if (min < clickThresh)
+        return position;
+    else
+        return -1;
+}
+/**
+ * Deletes the closest control point of B to p and remakes the curve
+ * @param p The reference point
+ */
+void deleteClosest(Point p)
+{
+    
+    int pos = getClosest(p);
+    if(pos != -1)
+        B->deleteControl(pos);
 }
 /**
  * The mouse click callback method
@@ -86,14 +102,43 @@ void deleteClosest(Point p)
  */
 void mouseClick(int button, int state, int x, int y)
 {
+    Point n = make_pair((double)x, height - (double)y);
     if(button ==  GLUT_LEFT_BUTTON && state == GLUT_DOWN) //addition
     {
-        B->add(make_pair((double)x, height - (double)y));
+        B->add(n);
     }
-    else if(button ==  GLUT_RIGHT_BUTTON && state == GLUT_DOWN) //deletion
+    else if(button ==  GLUT_MIDDLE_BUTTON && state == GLUT_DOWN) //deletion
     {
-        deleteClosest(make_pair((double)x, height - (double)y));
+        deleteClosest(n);
     }
+    else if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) //start tracking mouse for dragging
+    {
+        int temp = getClosest(n);
+        if(temp != -1)
+        {
+            track = true;
+            dragPos = temp;
+        }
+    }
+    else if(button == GLUT_RIGHT_BUTTON && state == GLUT_UP) //stop tracking
+    {
+        track = false;
+    }
+    glutPostRedisplay();
+}
+
+/**
+ * Callback function for mouse movement
+ * @param x The current x-coordinate of the mouse
+ * @param y The current y-coordinate of the mouse
+ */
+void mouseMove(int x, int y)
+{
+    if(!track)
+        return;
+    Point p = make_pair((double)x, height - (double)y);
+    B->controlPoints[dragPos] = p; //changing the control points
+    B->make(); //making the curve again
     glutPostRedisplay();
 }
 
@@ -112,6 +157,7 @@ void initGlut()
     B = new BezierDrawer(steps);
     glClearColor(backColor[0], backColor[1], backColor[2], 0);
     glutMouseFunc(mouseClick);
+    glutMotionFunc(mouseMove);
 }
 
 int main(int argc, char** argv)

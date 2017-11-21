@@ -15,8 +15,8 @@ BezierDrawer::BezierDrawer(int Steps)
 
 void BezierDrawer::deleteControl(int index)
 {
-    controlPoints.erase(controlPoints.begin() + index);
-    make();
+    controlPoints.erase(controlPoints.begin() + index); //deleting the index
+    make(); //making the curve again
 }
 
 void BezierDrawer::make()
