@@ -17,19 +17,21 @@
 using namespace std;
 using namespace glm;
 
-bool operator == (Point a, Point b)
+/**
+ * Structure which represents a 3D point
+ */
+struct Point3d {
+    double x,y,z;
+};
+
+bool operator == (Point3d a, Point3d b)
 {
     if(a.x == b.x && a.y==b.y && a.z==b.z)
         return true;
     else
         return false;
 }
-/**
- * Structure which represents a 3D point
- */
-struct Point {
-    double x,y,z;
-};
+
 
 /**
  * Structure to store the color values of objects
@@ -42,7 +44,7 @@ struct Color{
  * Class to model a polygonal mesh using pointer to vertex list representation
  */
 class Mesh {
-    vector<Point> vertices; //list of vertices
+    vector<Point3d> vertices; //list of vertices
     vector<vector<long> > polygons; //list of polygons
     vector<Color> vertexColors;
     vector<Color> polygonColors;
@@ -53,7 +55,7 @@ public:
      * @param p point to be added
      * @param c color of the point
      */
-    inline void addPoint(Point p, Color c = {255,255,255}) {
+    inline void addPoint(Point3d p, Color c = {255,255,255}) {
         vertices.push_back(p);
     }
 
@@ -82,10 +84,10 @@ public:
     /**
      * Fetch the coordinates of input point
      */
-    Point getVertexCoordinates(long vertexNumber){
+    Point3d getVertexCoordinates(long vertexNumber){
         if(vertexNumber>=vertices.size())
         {
-            Point temp;
+            Point3d temp;
             return temp;
         }
         else
@@ -95,11 +97,11 @@ public:
     /**
      * Returns the vertex number of the input point
      */
-    long getVertexIndex(Point p) {
-        if (find(vertices.begin(), vertices.end(), p) != vertices.end())
-            return
-        else
+    long getVertexIndex(Point3d p) {
+        if (find(vertices.begin(), vertices.end(), p) == vertices.end())
             return -1;
+        else
+            return find(vertices.begin(), vertices.end(), p) - vertices.begin();
     }
 
     /**

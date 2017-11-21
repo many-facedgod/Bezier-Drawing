@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include "Camera.h"
 #include "BezierDrawer.h"
+#include "SurfaceOfRevolution.h"
+#include "Mesh.h"
 
 using namespace std;
 /*
@@ -72,7 +74,11 @@ void initGlut()
     glutInitWindowSize(width, height);
     glutCreateWindow("Bezier");
     C = new Camera(width, height);
-    B = new BezierDrawer(1000);
+    B = new BezierDrawer(10);
+    vector<vector<Point3d> > vert;
+    surfaceInit(B, vert);
+//    cout<<"Blah"<<vert.size();
+
     glClearColor(backColor[0], backColor[1], backColor[2], 0);
     glutMouseFunc(mouseClick);
 }

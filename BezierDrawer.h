@@ -10,19 +10,19 @@
 #include <unordered_map>
 #include <vector>
 #include "Camera.h"
-typedef std::pair<GLdouble, GLdouble> Point;
+typedef std::pair<GLdouble, GLdouble> Point2d;
 class BezierDrawer
 {
 public:
     int steps;
-    std::vector < Point > controlPoints;
-    std::vector < Point > curvePoints;
+    std::vector < Point2d > controlPoints;
+    std::vector < Point2d > curvePoints;
     BezierDrawer(int Steps);
-    void make (std::vector < Point > ControlPoints);
-    void add (Point p);
+    void make (std::vector < Point2d > ControlPoints);
+    void add (Point2d p);
 private:
-    Point lerp(Point p1, Point p2, GLdouble t);
-    Point deCasteljau(int start, int end, GLdouble t);
+    Point2d lerp(Point2d p1, Point2d p2, GLdouble t);
+    Point2d deCasteljau(int start, int end, GLdouble t);
     
 };
 

@@ -13,7 +13,7 @@ BezierDrawer::BezierDrawer(int Steps)
     curvePoints.reserve(steps);
 }
 
-void BezierDrawer::make(std::vector< Point > ControlPoints)
+void BezierDrawer::make(std::vector< Point2d > ControlPoints)
 {
     controlPoints = ControlPoints;
     curvePoints.clear();
@@ -24,7 +24,7 @@ void BezierDrawer::make(std::vector< Point > ControlPoints)
     }
 }
 
-void BezierDrawer::add(Point p)
+void BezierDrawer::add(Point2d p)
 {
     controlPoints.push_back(p);
     GLdouble incr = 1.0 / steps;
@@ -44,14 +44,14 @@ void BezierDrawer::add(Point p)
     }   
 }
 
-Point BezierDrawer::lerp(Point p1, Point p2, GLdouble t)
+Point2d BezierDrawer::lerp(Point2d p1, Point2d p2, GLdouble t)
 {
     return make_pair(p1.first * (1 - t) + p2.first * t, p1.second * (1 - t) + p2.second * t);
 }
 
-Point BezierDrawer::deCasteljau(int start, int end, GLdouble t)
+Point2d BezierDrawer::deCasteljau(int start, int end, GLdouble t)
 {
-    std::vector < Point > temp(controlPoints);
+    std::vector < Point2d > temp(controlPoints);
     for(int i = end; i > start; i--)
     {
         for(int j = start; j < i; j++)
@@ -59,4 +59,5 @@ Point BezierDrawer::deCasteljau(int start, int end, GLdouble t)
     }
     return temp[start];    
 }
+
 
