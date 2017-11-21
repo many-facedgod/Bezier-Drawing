@@ -46,6 +46,22 @@ class Mesh {
     vector<vector<long> > polygons; //list of polygons
     vector<Color> vertexColors;
     vector<Color> polygonColors;
+    long edgeCount;
+
+    /**
+     * Calculates the edge count of the mesh
+     */
+    void calculateEdgeCount()
+    {
+        set<pair<long,long> > edges;
+        for (int i = 0; i < polygons.size(); ++i) {
+            for (int j = 0; j < polygons[i].size()-1; ++j) {
+                if(edges.find(make_pair(polygons[i][j],polygons[i][j+1])) == edges.end() && edges.find(make_pair(polygons[i][j+1],polygons[i][j])) == edges.end())
+                    edges.insert(make_pair(polygons[i][j],polygons[i][j+1]));
+            }
+        }
+        edgeCount = edges.size();
+    }
 
 public:
     /**
@@ -53,8 +69,9 @@ public:
      * @param p point to be added
      * @param c color of the point
      */
-    inline void addPoint(Point p, Color c = {255,255,255}) {
+    inline void addPoint(Point p, Color c = {255,255,255,1}) {
         vertices.push_back(p);
+        vertexColors.push_back(c);
     }
 
     /**
@@ -62,8 +79,9 @@ public:
      * @param polygon set of vertices in anticlockwise order which define the polygon
      * @param c color of the polygon
      */
-    inline void addPolygon(vector<long> polygon, Color c = {255,255,255}) {
+    inline void addPolygon(vector<long> polygon, Color c = {255,255,255,1}) {
         polygons.push_back(polygon);
+        polygonColors.push_back(c);
     }
 
     /**
@@ -102,9 +120,23 @@ public:
      */
     void serialize(string filename)
     {
+        calculateEdgeCount();
         fstream f(filename,ios::out);
         f<<"OFF"<<endl;
-        f<<vertices.size()<<" "<<polygons.size()<<endl;
+        f<<vertices.size()<<" "<<polygons.size()<<" "<<edgeCount<<endl;
+        //Write the vertices and their colors
+        for (int i = 0; i < vertices.size(); ++i) {
+            f<<vertices[i].x<<" "<<vertices[i].y<<" "<<vertices[i].z<<" "<<vertexColors[i].r<<" "<<vertexColors[i].g<<" "<<vertexColors[i].b<<" "<<vertexColors[i].a<<endl;
+        }
+        //Write polygons and their colors
+        for (int j = 0; j < polygons.size(); ++j) {
+            f<<polygons[j].size()<<" ";
+            for (long k : polygons[j]) {
+                f<< k <<" ";
+            }
+            f<<polygonColors[j].r<<" "<<polygonColors[j].g<<" "<<polygonColors[j].b<<" "<<polygonColors[j].a<<endl;
+        }
+        f.close();
     }
 
 };
