@@ -5,45 +5,20 @@
 #ifndef BEZIER_DRAWING_SURFACEOFREVOLUTION_H
 #define BEZIER_DRAWING_SURFACEOFREVOLUTION_H
 
-#endif //BEZIER_DRAWING_SURFACEOFREVOLUTION_H
-
 #include "BezierDrawer.h"
 #include "Mesh.h"
 #include <bits/stdc++.h>
 
-void surfaceInit(BezierDrawer* B, vector<vector<Point3d> > &vertices)
+void meshInit(BezierDrawer* B, vector<vector<dvec3> > &vertices)
 {
-    vector<Point3d> temp;
+    vector<dvec3> temp;
     for(auto point: B->curvePoints)
     {
-        Point3d p1;
-        p1.x = point.first;
-        p1.y = point.second;
-        p1.z = 0;
+        dvec3 p1 = {point.first, point.second, 0};
         temp.push_back(p1);
     }
-
     vertices.push_back(temp);
 }
-
-//void Camera:: yaw(double angle)
-//{
-//    dmat3 yaw_matrix(0.0f);
-//    yaw_matrix[0][0] = cos(radians(angle));
-//    yaw_matrix[0][1] = sin(radians(angle));
-//    yaw_matrix[1][0] = -sin(radians(angle));
-//    yaw_matrix[1][1] = cos(radians(angle));
-//
-//    dmat3 original_matrix(0.0f);
-//    original_matrix[0] = u;
-//    original_matrix[1] = n;
-//
-//    dmat3 transformed_matrix = original_matrix*yaw_matrix;
-//    u = transformed_matrix[0];
-//    n = transformed_matrix[1];
-//
-//    setModelViewMatrix();
-//}
 
 void getRotateMat(dmat3 &rotate_mat, double angle)
 {
@@ -58,36 +33,60 @@ void getRotateMat(dmat3 &rotate_mat, double angle)
     rotate_mat[2][2] = cos(radians(angle));
 }
 
-void updateVertices(vector<vector<Point3d> > &vect, dmat3 rotate_mat)
+void updateVertices(vector<vector<dvec3> > &vertices, dmat3 rotate_mat)
 {
-    int size = vect.size();
-    vector<Point3d> temp1;
-    vector<Point3d> temp (vect[size-1].begin(), vect[size-1].end());
-    for(auto point: temp)
+    long size = vertices.size();
+    vector<dvec3> new_points;
+    vector<dvec3> previous_points (vertices[size-1].begin(), vertices[size-1].end());
+    for(auto point: previous_points)
     {
         dvec3 temp_point = dvec3(point.x, point.y, point.z);
-        vec3 transformed_point = rotate_mat * temp_point;
-        Point3d trans_point;
-        trans_point.x = transformed_point[0];
-        trans_point.y = transformed_point[1];
-        trans_point.z = transformed_point[2];
-        temp1.push_back(trans_point);
+        dvec3 transformed_point = rotate_mat * temp_point;
+        dvec3 trans_point = {transformed_point[0], transformed_point[1], transformed_point[2]};
+        new_points.push_back(trans_point);
     }
-    vect.push_back(temp1);
+    vertices.push_back(new_points);
 }
 
-void makeSurface(vector<vector<Point3d> > &vect)
+void makeMesh(vector<vector<dvec3> > &vertices, double increment, string filename)
 {
-
+    Mesh m;
     // Iterating over degree from 1 to 360
-    for(int angle = 1; angle < 360; angle++)
+    for(double angle = increment; angle < 360; angle+= increment)
     {
         dmat3 rotate_mat(0.0f);
-        getRotateMat(rotate_mat, angle);
-        updateVertices(vect, rotate_mat);
-
+        getRotateMat(rotate_mat, increment);
+        updateVertices(vertices, rotate_mat);
+    }
+    
+    //add vertices to the mesh
+    for (auto &vertice : vertices) {
+        for (long j = 0; j < vertice.size(); ++j) {
+            m.addPoint(vertice[j]);
+        }
     }
 
+    vertices.push_back(vertices[0]); //finishing the mesh by adding the initial points
+    //add polygons to the mesh by converting them into a series of triangles
+    for (long i = 0; i < vertices.size()-1; ++i) {
+        for (long j = 0; j < vertices[i].size() - 1; ++j) {
+            vector<long> triangle1;
+            triangle1.push_back(m.getVertexIndex(vertices[i][j]));
+            triangle1.push_back(m.getVertexIndex(vertices[i][j+1]));
+            triangle1.push_back(m.getVertexIndex(vertices[i+1][j]));
+
+            vector<long> triangle2;
+            triangle2.push_back(m.getVertexIndex(vertices[i+1][j]));
+            triangle2.push_back(m.getVertexIndex(vertices[i][j+1]));
+            triangle2.push_back(m.getVertexIndex(vertices[i+1][j+1]));
+
+            m.addPolygon(triangle1);
+            m.addPolygon(triangle2);
+            cout<<i<<" "<<j<<endl;
+        }
+    }
+    m.serialize(filename);
 }
 
+#endif //BEZIER_DRAWING_SURFACEOFREVOLUTION_H
 
