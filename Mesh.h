@@ -108,6 +108,7 @@ public:
      */
     void serialize(string filename)
     {
+        Color c = {0.34, 0.5, 0.3, 0.3};
         calculateEdgeCount();
         fstream f(filename,ios::out);
         f<<"OFF"<<endl;
@@ -122,7 +123,8 @@ public:
             for (long k : polygons[j]) {
                 f<< k <<" ";
             }
-            f<<endl;
+            f<<c.r<<" "<<c.g<<" "<<c.b<<" "<<c.a<<" "<<endl;
+
         }
         f.close();
     }
