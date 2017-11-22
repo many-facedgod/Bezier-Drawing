@@ -9,6 +9,11 @@
 #include "Mesh.h"
 #include <bits/stdc++.h>
 
+/**
+ * Function to convert the 2d coordinates of the curve points to 3d
+ * @param B refers to the BezierDrawer object (curve)
+ * @param vertices refers to the vector containing all the vertices and their modified points (after rotations)
+ */
 void meshInit(BezierDrawer* B, vector<vector<dvec3> > &vertices)
 {
     vector<dvec3> temp;
@@ -20,6 +25,11 @@ void meshInit(BezierDrawer* B, vector<vector<dvec3> > &vertices)
     vertices.push_back(temp);
 }
 
+/**
+ * Function to get a rotate matrix based on the given angle
+ * @param rotate_mat refers to the rotation matrix which will be used for transformation
+ * @param angle refert to the angle using which rotation matrix will be calculated
+ */
 void getRotateMat(dmat3 &rotate_mat, double angle)
 {
     rotate_mat[0][0] = cos(radians(angle));
@@ -33,6 +43,11 @@ void getRotateMat(dmat3 &rotate_mat, double angle)
     rotate_mat[2][2] = cos(radians(angle));
 }
 
+/**
+ * Function to get the updated coordinates of each vertex after subsequent rotations
+ * @param vertices refers to the vector containing all the vertices and their modified points (after rotations)
+ * @param rotate_mat refers to the rotation matrix which will be used for transformation
+ */
 void updateVertices(vector<vector<dvec3> > &vertices, dmat3 rotate_mat)
 {
     long size = vertices.size();
@@ -48,6 +63,12 @@ void updateVertices(vector<vector<dvec3> > &vertices, dmat3 rotate_mat)
     vertices.push_back(new_points);
 }
 
+/**
+ * Function to create the mesh using the vertices' coordinates calculated above
+ * @param vertices refers to the vector containing all the vertices and their modified points (after rotations)
+ * @param increment refers to the increment in the angle of rotation
+ * @param filename refers to the final output filename
+ */
 void makeMesh(vector<vector<dvec3> > &vertices, double increment, string filename)
 {
     Mesh m;
@@ -67,6 +88,7 @@ void makeMesh(vector<vector<dvec3> > &vertices, double increment, string filenam
     }
 
     vertices.push_back(vertices[0]); //finishing the mesh by adding the initial points
+
     //add polygons to the mesh by converting them into a series of triangles
     for (long i = 0; i < vertices.size()-1; ++i) {
         for (long j = 0; j < vertices[i].size() - 1; ++j) {
@@ -82,7 +104,6 @@ void makeMesh(vector<vector<dvec3> > &vertices, double increment, string filenam
 
             m.addPolygon(triangle1);
             m.addPolygon(triangle2);
-            cout<<i<<" "<<j<<endl;
         }
     }
     m.serialize(filename);
